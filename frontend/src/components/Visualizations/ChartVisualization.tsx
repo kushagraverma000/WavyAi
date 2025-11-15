@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter } from 'recharts'
-import { QueryResponse, visualizationAPI } from '../../services/api'
-import { Download } from 'lucide-react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { QueryResponse } from '../../services/api'
 
 interface ChartVisualizationProps {
   query: QueryResponse | null
@@ -13,7 +12,6 @@ export default function ChartVisualization({ query }: ChartVisualizationProps) {
   useEffect(() => {
     // Generate sample data based on query
     if (query?.visualization) {
-      const config = query.visualization.config
       const data = []
       
       // Generate sample data for demonstration
@@ -40,6 +38,7 @@ export default function ChartVisualization({ query }: ChartVisualizationProps) {
   }
 
   const config = query.visualization.config
+  const xAxisKey: string = (config.x_axis as string) || 'depth'
 
   return (
     <div className="p-4 h-full bg-ocean-deep">
@@ -48,9 +47,9 @@ export default function ChartVisualization({ query }: ChartVisualizationProps) {
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#1B3A57" />
           <XAxis 
-            dataKey={config.x_axis || 'depth'} 
+            dataKey={xAxisKey as any}
             stroke="#1EE3CF"
-            label={{ value: config.x_axis || 'Depth (m)', position: 'insideBottom', offset: -5, fill: '#1EE3CF' }}
+            label={{ value: xAxisKey, position: 'insideBottom', offset: -5, fill: '#1EE3CF' }}
           />
           <YAxis 
             stroke="#1EE3CF"

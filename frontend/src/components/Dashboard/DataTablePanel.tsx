@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Search, Table, FileText, Database } from 'lucide-react'
-import { profileAPI, floatAPI, visualizationAPI } from '../../services/api'
+import { profileAPI, floatAPI } from '../../services/api'
 
 interface DataTablePanelProps {
   query: any

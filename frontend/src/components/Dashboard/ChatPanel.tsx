@@ -8,7 +8,7 @@ interface ChatPanelProps {
 }
 
 export default function ChatPanel({ onQuery }: ChatPanelProps) {
-  const { queryHistory, isQuerying, currentQuery } = useStore()
+  const { queryHistory, isQuerying } = useStore()
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
 

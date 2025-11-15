@@ -196,7 +196,7 @@ const SimpleChart: React.FC<SimpleChartProps> = ({
     }
   }
 
-  const getChartDataset = () => {
+  const getChartDataset = (): any => {
     if (type === 'temperature-depth') {
       return {
         labels: chartData.map(d => d.temperature),
@@ -225,11 +225,11 @@ const SimpleChart: React.FC<SimpleChartProps> = ({
       }
     } else if (type === 'temperature-trend') {
       return {
-        labels: chartData.map(d => d.date),
+        labels: chartData.map(d => d.date || ''),
         datasets: [
           {
             label: 'Surface Temperature',
-            data: chartData.map(d => ({ x: d.date, y: d.temperature })),
+            data: chartData.map(d => ({ x: d.date || '', y: d.temperature })),
             borderColor: 'rgb(16, 185, 129)',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             tension: 0.1,

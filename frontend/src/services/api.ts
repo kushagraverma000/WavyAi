@@ -1,41 +1,5 @@
-import axios from 'axios'
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-
-// Request interceptor
-api.interceptors.request.use(
-  (config) => {
-    // Add auth token if available
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-// Response interceptor
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized
-      localStorage.removeItem('token')
-      window.location.href = '/'
-    }
-    return Promise.reject(error)
-  }
-)
+// NOTE: This file is now a pure frontend mock layer.
+// It returns hardcoded demo data and does not make any HTTP requests.
 
 export interface QueryRequest {
   query: string
@@ -108,30 +72,128 @@ export interface Float {
   metadata?: Record<string, unknown>
 }
 
+// Mock data
+const MOCK_FLOATS: Float[] = [
+  {
+    id: 'float-1',
+    float_id: '5906468',
+    platform_number: 'NA-001',
+    name: 'North Atlantic Float',
+    project_name: 'WavyAI Demo Mission',
+    deployment_date: '2024-01-15T00:00:00Z',
+    deployment_latitude: 45.2,
+    deployment_longitude: -30.1,
+    last_profile_date: '2024-11-10T00:00:00Z',
+    last_latitude: 45.2,
+    last_longitude: -30.1,
+    current_status: 'active',
+    metadata: { region: 'North Atlantic', cycles: 156 },
+  },
+  {
+    id: 'float-2',
+    float_id: '5905123',
+    platform_number: 'SO-014',
+    name: 'Southern Ocean Float',
+    project_name: 'Deep Waters Campaign',
+    deployment_date: '2023-09-03T00:00:00Z',
+    deployment_latitude: -55.8,
+    deployment_longitude: 140.3,
+    last_profile_date: '2024-10-02T00:00:00Z',
+    last_latitude: -55.2,
+    last_longitude: 142.1,
+    current_status: 'active',
+    metadata: { region: 'Southern Ocean', cycles: 98 },
+  },
+]
+
+const MOCK_PROFILES: Profile[] = [
+  {
+    id: 'profile-1',
+    float_id: '5906468',
+    profile_number: 156,
+    profile_date: '2024-11-10T00:00:00Z',
+    latitude: 45.2,
+    longitude: -30.1,
+    number_of_levels: 120,
+    pressure_min: 5,
+    pressure_max: 2000,
+    depth_min: 5,
+    depth_max: 2000,
+    has_temperature: true,
+    has_salinity: true,
+    has_pressure: true,
+    has_bgc_data: true,
+    summary: 'Latest profile from the North Atlantic demonstration float.',
+    metadata: { region: 'North Atlantic' },
+  },
+  {
+    id: 'profile-2',
+    float_id: '5905123',
+    profile_number: 98,
+    profile_date: '2024-10-02T00:00:00Z',
+    latitude: -55.2,
+    longitude: 142.1,
+    number_of_levels: 95,
+    pressure_min: 5,
+    pressure_max: 1500,
+    depth_min: 5,
+    depth_max: 1500,
+    has_temperature: true,
+    has_salinity: true,
+    has_pressure: true,
+    has_bgc_data: false,
+    summary: 'Southern Ocean profile highlighting the Antarctic Circumpolar Current.',
+    metadata: { region: 'Southern Ocean' },
+  },
+]
+
 // API functions
 export const queryAPI = {
   query: async (request: QueryRequest): Promise<QueryResponse> => {
-    try {
-      // Use the simple query endpoint
-      const response = await api.post<QueryResponse>('/query', request)
-      return response.data
-    } catch (error) {
-      console.error('Query failed:', error)
-      // Return a fallback response
-      return {
-        response: "I'm having trouble processing your query right now. Please try asking about ocean temperature, salinity, or ARGO float locations.",
-        sources: [],
-        visualization: {
-          type: "map",
-          title: "ARGO Float Locations",
-          config: { center: [0, 0], zoom: 2 }
+    const now = new Date().toISOString()
+
+    return {
+      response:
+        request.query ||
+        'Exploring the global ocean with ARGO floats. This is a demo answer generated entirely on the frontend.',
+      sources: [
+        {
+          type: 'float_profile',
+          id: 'profile-1',
+          float_id: '5906468',
+          date: '2024-11-10T00:00:00Z',
+          location: { lat: 45.2, lon: -30.1 },
         },
-        user_type: "general",
-        query_intent: "general_query",
-        entities: {},
-        metadata: {},
-        timestamp: new Date().toISOString()
-      }
+        {
+          type: 'float_profile',
+          id: 'profile-2',
+          float_id: '5905123',
+          date: '2024-10-02T00:00:00Z',
+          location: { lat: -55.2, lon: 142.1 },
+        },
+      ],
+      visualization: {
+        type: 'map',
+        title: 'Demo ARGO Float Locations',
+        config: { center: [10, 0], zoom: 2 },
+        data: {
+          floats: MOCK_FLOATS,
+        },
+      },
+      data_table: {
+        profiles: MOCK_PROFILES,
+        floats: MOCK_FLOATS,
+      },
+      user_type: 'ocean_scientist',
+      query_intent: 'explore_argo_profiles',
+      entities: {
+        region: ['North Atlantic', 'Southern Ocean'],
+        variables: ['temperature', 'salinity'],
+      },
+      metadata: {
+        demo: true,
+      },
+      timestamp: now,
     }
   },
 }
@@ -148,25 +210,24 @@ export const profileAPI = {
     min_longitude?: number
     max_longitude?: number
   }): Promise<{ profiles: Profile[]; total: number; page: number; page_size: number }> => {
-    try {
-      const response = await api.get('/profiles', { params })
-      return response.data
-    } catch (error) {
-      // Fallback to simple endpoint
-      console.warn('Failed to get profiles from main endpoint, using simple endpoint')
-      const response = await api.get('/simple/profiles', { params: { page: params?.page || 1, page_size: params?.page_size || 20 } })
-      return response.data
+    const page = params?.page ?? 1
+    const page_size = params?.page_size ?? MOCK_PROFILES.length
+
+    return {
+      profiles: MOCK_PROFILES,
+      total: MOCK_PROFILES.length,
+      page,
+      page_size,
     }
   },
   getProfile: async (profileId: string): Promise<Profile> => {
-    try {
-      const response = await api.get(`/profiles/${profileId}`)
-      return response.data
-    } catch (error) {
-      // Fallback - return sample profile
-      console.warn('Failed to get profile from main endpoint')
-      throw error
-    }
+    const profile = MOCK_PROFILES.find((p) => p.id === profileId || p.float_id === profileId)
+    return (
+      profile || {
+        ...MOCK_PROFILES[0],
+        id: profileId,
+      }
+    )
   },
 }
 
@@ -176,32 +237,30 @@ export const floatAPI = {
     page_size?: number
     status?: string
   }): Promise<{ floats: Float[]; total: number; page: number; page_size: number }> => {
-    try {
-      const response = await api.get('/floats', { params })
-      return response.data
-    } catch (error) {
-      // Fallback to simple endpoint
-      console.warn('Failed to get floats from main endpoint, using simple endpoint')
-      const response = await api.get('/simple/floats/list', { params: { page: params?.page || 1, page_size: params?.page_size || 20 } })
-      return response.data
+    const page = params?.page ?? 1
+    const page_size = params?.page_size ?? MOCK_FLOATS.length
+
+    return {
+      floats: MOCK_FLOATS,
+      total: MOCK_FLOATS.length,
+      page,
+      page_size,
     }
   },
   getFloat: async (floatId: string): Promise<Float> => {
-    try {
-      const response = await api.get(`/floats/${floatId}`)
-      return response.data
-    } catch (error) {
-      // Fallback - return sample float
-      console.warn('Failed to get float from main endpoint')
-      throw error
-    }
+    const item = MOCK_FLOATS.find((f) => f.id === floatId || f.float_id === floatId)
+    return (
+      item || {
+        ...MOCK_FLOATS[0],
+        id: floatId,
+      }
+    )
   },
 }
 
 export const healthAPI = {
   check: async (): Promise<{ status: string; database?: string }> => {
-    const response = await api.get('/health/health')
-    return response.data
+    return Promise.resolve({ status: 'healthy', database: 'mock' })
   },
 }
 
@@ -211,22 +270,22 @@ export const visualizationAPI = {
     status?: string
     limit?: number
   }) => {
-    try {
-      const response = await api.get('/simple/floats', { params })
-      return response.data
-    } catch (error) {
-      console.error('Failed to get float locations:', error)
-      // Return fallback data
-      return {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: { type: "Point", coordinates: [-30.1, 45.2] },
-            properties: { id: "5906468", name: "North Atlantic Float", status: "active", last_update: "2024-11-10", total_profiles: 156 }
-          }
-        ]
-      }
+    return {
+      type: 'FeatureCollection',
+      features: MOCK_FLOATS.map((f) => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [f.last_longitude ?? f.deployment_longitude ?? 0, f.last_latitude ?? f.deployment_latitude ?? 0],
+        },
+        properties: {
+          id: f.float_id,
+          name: f.name,
+          status: f.current_status,
+          last_update: f.last_profile_date,
+          total_profiles: (f.metadata as any)?.cycles ?? 0,
+        },
+      })),
     }
   },
   
@@ -237,53 +296,44 @@ export const visualizationAPI = {
     has_bgc?: boolean
     limit?: number
   }) => {
-    try {
-      const response = await api.get('/simple/search', { params })
-      return response.data
-    } catch (error) {
-      console.error('Failed to get profile locations:', error)
-      return { profiles: [], total: 0 }
+    return {
+      profiles: MOCK_PROFILES,
+      total: MOCK_PROFILES.length,
+      query: params,
     }
   },
   
   getTemperatureDepthChart: async (profileId: string) => {
-    try {
-      const response = await api.get(`/simple/profiles/${profileId}/temperature-depth`)
-      return response.data
-    } catch (error) {
-      console.error('Failed to get temperature-depth chart:', error)
-      return { data: [], metadata: { parameter: "temperature", units: "°C" } }
-    }
+    const data = Array.from({ length: 20 }).map((_, i) => ({
+      depth: i * 100,
+      temperature: 25 - i * 0.4,
+    }))
+
+    return { data, metadata: { parameter: 'temperature', units: '°C' } }
   },
   
   getSalinityDepthChart: async (profileId: string) => {
-    try {
-      const response = await api.get(`/simple/profiles/${profileId}/salinity-depth`)
-      return response.data
-    } catch (error) {
-      console.error('Failed to get salinity-depth chart:', error)
-      return { data: [], metadata: { parameter: "salinity", units: "PSU" } }
-    }
+    const data = Array.from({ length: 20 }).map((_, i) => ({
+      depth: i * 100,
+      salinity: 35 - i * 0.02,
+    }))
+
+    return { data, metadata: { parameter: 'salinity', units: 'PSU' } }
   },
   
-  getTSDiagram: async (profileId: string) => {
+  getTSDiagram: async (_profileId: string) => {
     // T-S diagram not implemented in simple version, return empty
     return { data: [], metadata: { parameter: "ts_diagram", units: "mixed" } }
   },
   
   exportProfileCSV: async (profileId: string) => {
-    try {
-      const response = await api.get(`/simple/export/csv/${profileId}`)
-      const csvContent = response.data.content
-      const blob = new Blob([csvContent], { type: 'text/csv' })
-      return blob
-    } catch (error) {
-      console.error('Failed to export CSV:', error)
-      // Create a fallback CSV
-      const csvContent = "level,pressure,depth,temperature,salinity\n1,5,5.1,25.2,35.1\n2,55,56.1,24.8,35.0\n3,105,107.1,24.2,34.9"
-      const blob = new Blob([csvContent], { type: 'text/csv' })
-      return blob
-    }
+    const csvContent =
+      'level,pressure,depth,temperature,salinity\n' +
+      '1,5,5.1,25.2,35.1\n' +
+      '2,55,56.1,24.8,35.0\n' +
+      '3,105,107.1,24.2,34.9'
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    return blob
   },
   
   searchProfiles: async (params?: {
@@ -298,15 +348,13 @@ export const visualizationAPI = {
     max_depth?: number
     limit?: number
   }) => {
-    try {
-      const response = await api.get('/simple/search', { params })
-      return response.data
-    } catch (error) {
-      console.error('Failed to search profiles:', error)
-      return { profiles: [], total: 0, query: params }
+    return {
+      profiles: MOCK_PROFILES,
+      total: MOCK_PROFILES.length,
+      query: params,
     }
   },
 }
 
-export default api
+// No default export (axios instance) is needed in the mock-only version.
 

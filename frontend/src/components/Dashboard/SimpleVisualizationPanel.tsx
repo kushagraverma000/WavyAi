@@ -9,7 +9,7 @@ export default function SimpleVisualizationPanel() {
   const { currentQuery } = useStore()
   const [visualizationType, setVisualizationType] = useState<'map' | 'chart'>('map')
   const [chartType, setChartType] = useState<'temperature-depth' | 'salinity-depth' | 'temperature-trend'>('temperature-depth')
-  const [selectedProfileId, setSelectedProfileId] = useState<string>('profile_5906468_001')
+  const [selectedProfileId] = useState<string>('profile_5906468_001')
 
   useEffect(() => {
     if (currentQuery?.visualization) {

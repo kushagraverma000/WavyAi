@@ -73,26 +73,30 @@ export default function ContextPanel() {
           <div className="card">
             <h3 className="font-semibold mb-2">Extracted Entities</h3>
             <div className="space-y-2 text-sm">
-              {currentQuery.entities.parameters && (
-                <div>
-                  <p className="font-medium text-gray-300">Parameters:</p>
-                  <p className="text-gray-400">
-                    {Array.isArray(currentQuery.entities.parameters)
-                      ? currentQuery.entities.parameters.join(', ')
-                      : String(currentQuery.entities.parameters)}
-                  </p>
-                </div>
-              )}
-              {currentQuery.entities.depth_ranges && (
-                <div>
-                  <p className="font-medium text-gray-300">Depth Ranges:</p>
-                  <p className="text-gray-400">
-                    {Array.isArray(currentQuery.entities.depth_ranges)
-                      ? currentQuery.entities.depth_ranges.join(', ') + ' m'
-                      : String(currentQuery.entities.depth_ranges)}
-                  </p>
-                </div>
-              )}
+              {currentQuery.entities.parameters ? (() => {
+                const params = currentQuery.entities.parameters
+                const paramsStr: string = Array.isArray(params)
+                  ? params.join(', ')
+                  : String(params as unknown as string | number | boolean)
+                return (
+                  <div key="parameters">
+                    <p className="font-medium text-gray-300">Parameters:</p>
+                    <p className="text-gray-400">{paramsStr}</p>
+                  </div>
+                )
+              })() : null}
+              {currentQuery.entities.depth_ranges ? (() => {
+                const ranges = currentQuery.entities.depth_ranges
+                const rangesStr: string = Array.isArray(ranges)
+                  ? ranges.join(', ') + ' m'
+                  : String(ranges as unknown as string | number | boolean) + ' m'
+                return (
+                  <div key="depth-ranges">
+                    <p className="font-medium text-gray-300">Depth Ranges:</p>
+                    <p className="text-gray-400">{rangesStr}</p>
+                  </div>
+                )
+              })() : null}
             </div>
           </div>
         )}
@@ -102,9 +106,10 @@ export default function ContextPanel() {
           <h3 className="font-semibold mb-2">Session Statistics</h3>
           <div className="space-y-2 text-sm text-gray-300">
             <p>Total Queries: {queryHistory.length}</p>
-            {currentQuery?.metadata && currentQuery.metadata.confidence && (
-              <p>Confidence: {(currentQuery.metadata.confidence * 100).toFixed(0)}%</p>
-            )}
+            {currentQuery?.metadata && currentQuery.metadata.confidence ? (() => {
+              const confidence: number = (currentQuery.metadata.confidence as unknown as number) * 100
+              return <p>Confidence: {confidence.toFixed(0)}%</p>
+            })() : null}
           </div>
         </div>
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Map, BarChart3, Download } from 'lucide-react'
 import { useStore } from '../../store/useStore'
-import MapVisualization from '../Visualizations/MapVisualization'
 import SimpleMapVisualization from '../Visualizations/SimpleMapVisualization'
 import EnhancedChartVisualization from '../Visualizations/EnhancedChartVisualization'
 
