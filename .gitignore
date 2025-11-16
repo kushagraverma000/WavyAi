@@ -64,6 +64,9 @@ data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
+# Raw dataset folder (large) - ignore the entire top-level raw directory
+/raw/
+
 # Testing
 .coverage
 .pytest_cache/
@@ -78,3 +81,5 @@ htmlcov/
 qdrant_storage/
 chroma_db/
 
+backend/venv-full/
+backend/venv/
