@@ -1,0 +1,345 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-ocean-deep text-white font-sans;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-ocean-turquoise text-ocean-deep rounded-lg font-medium hover:bg-opacity-90 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply px-4 py-2 bg-ocean-medium text-white rounded-lg font-medium hover:bg-opacity-90 transition-colors;
+  }
+  
+  .card {
+    @apply bg-ocean-medium rounded-lg p-4 shadow-lg;
+  }
+  
+  .input {
+    @apply px-4 py-2 bg-ocean-light text-white rounded-lg border border-ocean-turquoise focus:outline-none focus:ring-2 focus:ring-ocean-turquoise;
+  }
+}
+
+/* Wave animation background */
+.wave-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(180deg, #0A1128 0%, #1B3A57 50%, #2E5984 100%);
+  overflow: hidden;
+}
+
+.wave-background::before,
+.wave-background::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(30, 227, 207, 0.1) 0%, transparent 70%);
+  animation: wave 20s ease-in-out infinite;
+}
+
+.wave-background::after {
+  animation-delay: -10s;
+  background: radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg);
+  }
+}
+
+/* Animated Ocean Background for Home Section */
+.animated-ocean-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: 
+    linear-gradient(180deg, #0A1128 0%, #1B3A57 30%, #2E5984 60%, #1B3A57 100%),
+    url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='2' fill='%231EE3CF' opacity='0.3'/%3E%3Ccircle cx='80' cy='40' r='1.5' fill='%23FF6B6B' opacity='0.3'/%3E%3Ccircle cx='50' cy='70' r='1' fill='%233B82F6' opacity='0.3'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 200px 200px;
+  animation: particleFloat 25s linear infinite;
+  overflow: hidden;
+}
+
+.animated-ocean-background::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(30, 227, 207, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 107, 107, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 50%);
+  animation: oceanFlow 15s ease-in-out infinite;
+}
+
+.animated-ocean-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(30, 227, 207, 0.03) 2px, rgba(30, 227, 207, 0.03) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 107, 107, 0.03) 2px, rgba(255, 107, 107, 0.03) 4px);
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes oceanFlow {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+    opacity: 0.9;
+  }
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 0, 200px 200px;
+  }
+}
+
+/* Floating bubbles overlay for hero section */
+.hero-bubbles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-bubbles::before,
+.hero-bubbles::after {
+  content: '';
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  background:
+    radial-gradient(circle at 10% 110%, rgba(30, 227, 207, 0.45) 0, transparent 40%),
+    radial-gradient(circle at 40% 120%, rgba(59, 130, 246, 0.35) 0, transparent 45%),
+    radial-gradient(circle at 80% 130%, rgba(255, 107, 107, 0.28) 0, transparent 50%);
+  animation: heroBubbleRise 16s ease-in-out infinite;
+}
+
+.hero-bubbles::after {
+  animation-duration: 22s;
+  animation-direction: reverse;
+  opacity: 0.6;
+}
+
+@keyframes heroBubbleRise {
+  0% {
+    transform: translate3d(0, 20px, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(-20px, -10px, 0) scale(1.03);
+  }
+  50% {
+    transform: translate3d(10px, -30px, 0) scale(0.98);
+  }
+  75% {
+    transform: translate3d(-10px, -45px, 0) scale(1.02);
+  }
+  100% {
+    transform: translate3d(0, -60px, 0) scale(1);
+  }
+}
+
+/* Subtle floating animation for cards across the site */
+.card {
+  @apply bg-ocean-medium rounded-lg p-4 shadow-lg;
+  position: relative;
+  overflow: hidden;
+  transition: transform 300ms ease, box-shadow 300ms ease, background 300ms ease;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 0% 0%, rgba(30, 227, 207, 0.12), transparent 55%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* Enhanced ocean-like background with animated gradient and bubbles */
+.ocean-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0A1128, #1B3A57, #2E5984);
+  animation: oceanGradient 20s ease-in-out infinite alternate;
+}
+
+.ocean-background::before,
+.ocean-background::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.ocean-background::before {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: bubbles 15s linear infinite;
+}
+
+.ocean-background::after {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 80%);
+  animation: plankton 20s linear infinite;
+}
+
+.ocean-background::after::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 0.1));
+  animation: lightRays 30s ease-in-out infinite;
+}
+
+@keyframes oceanGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes bubbles {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes plankton {
+  0% { transform: translate(-10px, 0); }
+  50% { transform: translate(10px, -10px); }
+  100% { transform: translate(-10px, 0); }
+}
+
+@keyframes lightRays {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(50%); }
+}
+
+/* Ensure main content is scrollable */
+.main-content {
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+/* Global background animation for the entire site */
+/* body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(180deg, #0A1128 0%, #1B3A57 50%, #2E5984 100%);
+  overflow: hidden;
+  animation: oceanGradientShift 30s ease-in-out infinite;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: floatParticles 20s linear infinite;
+} */
+
+/* Apply subtle floating animation to all cards and buttons */
+.card, .button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover, .button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* @keyframes oceanGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes floatParticles {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-20px, -10px); }
+  100% { transform: translate(0, 0); }
+} */
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-ocean-medium;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-ocean-turquoise rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-opacity-80;
+}
